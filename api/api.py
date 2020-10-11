@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -44,3 +44,17 @@ def quizes():
             "options": quiz.options
         }
     return jsonify(dic)
+
+@api_bp.route("/game/<game_code>")
+def game(game_code):
+    quizes = db_session.query(Quiz).join(Game).filter(Game.code == game_code).all()
+    ret = list()
+    for quiz in quizes:
+        ret.append({
+            "lon": quiz.lon,
+            "lat": quiz.lat,
+            "game_id": quiz.game_id,
+            "correct": quiz.correct,
+            "options": quiz.options
+        })
+    return jsonify(ret)
