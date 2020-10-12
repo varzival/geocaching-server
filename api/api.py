@@ -47,14 +47,21 @@ def quizes():
 
 @api_bp.route("/game/<game_code>")
 def game(game_code):
+    game = db_session.query(Game).filter(Game.code == game_code).first()
+    if not game:
+        return {}
     quizes = db_session.query(Quiz).join(Game).filter(Game.code == game_code).all()
-    ret = list()
+    quiz_arr = list()
     for quiz in quizes:
-        ret.append({
+        quiz_arr.append({
             "lon": quiz.lon,
             "lat": quiz.lat,
             "game_id": quiz.game_id,
             "correct": quiz.correct,
             "options": quiz.options
         })
+    ret = {
+        "name": game.name,
+        "quizes": quiz_arr
+    }
     return jsonify(ret)
