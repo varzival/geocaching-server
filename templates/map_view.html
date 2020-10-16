@@ -7,7 +7,12 @@ crossorigin=""/>
 {% endblock %}
 
 {% block content %}
-<game_code code="{{ game_code }}"></game_code>
+<div id="vm" code="{{ game_code }}">
+  <div>
+    <p>[[code]]</p>
+    <p>[[game.name]]</p>
+  </div>
+</div>
 
 <div id="map" style="height: 500px;"></div> 
 {% endblock %}

@@ -58,6 +58,7 @@ def game(game_code):
             "lat": quiz.lat,
             "game_id": quiz.game_id,
             "correct": quiz.correct,
+            "text": quiz.text,
             "options": quiz.options
         })
     ret = {

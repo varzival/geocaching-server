@@ -9,10 +9,11 @@
 </head>
 
 <body>
-    <div id="vm" class="content">{% block content %}{% endblock %}</div>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-    <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
-    <script src="https://unpkg.com/vue-async-computed"></script>
+    <div class="content">{% block content %}{% endblock %}</div>
+    <!-- for production -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     {% block scripts %}{% endblock %}
 </body>
 
