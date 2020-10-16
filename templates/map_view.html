@@ -1,9 +1,12 @@
-<body>
-    <div id="vm" class="container">
-        <game_code code="{{ game_code }}"></game_code>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/vue-async-computed"></script>
-    <script src="{{ url_for('client_bp.static', filename='map_view.js') }}"></script>
-</body>
-    
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<game_code code="{{ game_code }}"></game_code>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('client_bp.static', filename='map_view.js') }}"></script>
+{% endblock %}
