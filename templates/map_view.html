@@ -12,9 +12,30 @@ crossorigin=""/>
     <p>[[code]]</p>
     <p>[[game.name]]</p>
   </div>
+
+  <!--
+  <div v-bind:class="marker_selected < 0 ? 'sidepanel' : 'sidepanel_active'">
+    <div v-if="game.quizes.length && marker_selected > -1">
+      <p>[[ game.quizes[marker_selected].text ]]</p>
+    </div>
+  </div>
+  -->
+  <div id="map" ref="map" style="height: 500px;"></div> 
+  
+  <div v-if="game.hasOwnProperty('quizes')">
+    <div v-if="game.quizes.length && marker_selected > -1">
+      <p>[[ game.quizes[marker_selected].text ]]</p>
+      <p v-for="option in game.quizes[marker_selected].options">
+        [[ option ]]
+      </p>
+    </div>
+  </div>
+
 </div>
 
-<div id="map" style="height: 500px;"></div> 
+</div>
+
+
 {% endblock %}
 
 {% block scripts %}

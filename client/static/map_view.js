@@ -7,10 +7,12 @@ new Vue({
     data: {
         map: null,
         code: "",
-        game: {}
+        game: {},
+        markers: [],
+        marker_selected: -1
     },
-    created() {
-        var element = document.getElementById('map');
+    mounted() {
+        var element = this.$refs.map;
         this.map = L.map(element);
 
         // Add OSM tile leayer to the Leaflet map.
@@ -26,14 +28,32 @@ new Vue({
             var quizes = vm.game.quizes;
 
             var lastTarget = L.latLng(defaultLoc[0], defaultLoc[1]);
-            for (quiz in quizes)
+            for (quiznr in quizes)
             {
-                quiz = quizes[quiz];
+                quiz = quizes[quiznr];
                 var target = L.latLng(""+quiz.lat, ""+quiz.lon);
                 lastTarget = target;
-                L.marker(target).addTo(vm.map);
+                vm.addMarker(quiz);
             }
             vm.map.setView(lastTarget, 14);
+            vm.map.on("click", vm.onMapClick);
         });
+    },
+    methods: {
+        addMarker(quiz) {
+            var target = L.latLng(""+quiz.lat, ""+quiz.lon);
+            var marker = L.marker(target, {draggable: true});
+            const marker_nr = this.markers.length;
+            const vm = this;
+            marker
+                .bindPopup(quiz.text)
+                .addTo(this.map)
+                .on("click", function(e){vm.marker_selected = marker_nr;});
+            this.markers.push(marker);
+            return marker;
+        },
+        onMapClick(e) {
+            L.marker([0,0], {draggable: true}).setLatLng(e.latlng).bindPopup("").addTo(this.map);
+        }
     }
 });
