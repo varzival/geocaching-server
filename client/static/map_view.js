@@ -39,14 +39,3 @@ new Vue({
         });
     }
 });
-
-/*
-// Target's GPS coordinates.
-var target = L.latLng('47.50737', '19.04611');
-
-// Set map's center to target with zoom 14.
-map.setView(target, 14);
-
-// Place a marker on the same location.
-L.marker(target).addTo(map);
-*/
