@@ -1,4 +1,5 @@
 const apiEndpoint = '/api/';
+const defaultLoc = [ "49.404421", "8.675951" ];
 
 new Vue({
     el: '#vm',
@@ -24,18 +25,15 @@ new Vue({
             vm.game = response.data;
             var quizes = vm.game.quizes;
 
-            var lastTarget = null;
+            var lastTarget = L.latLng(defaultLoc[0], defaultLoc[1]);
             for (quiz in quizes)
             {
                 quiz = quizes[quiz];
-                var target = L.latLng(""+quiz.lon, ""+quiz.lat);
+                var target = L.latLng(""+quiz.lat, ""+quiz.lon);
                 lastTarget = target;
                 L.marker(target).addTo(vm.map);
             }
-            if (lastTarget)
-            {
-                vm.map.setView(lastTarget, 14);
-            }
+            vm.map.setView(lastTarget, 14);
         });
     }
 });

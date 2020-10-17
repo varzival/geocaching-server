@@ -1,15 +1,11 @@
 const apiEndpoint = '/api/';
 
-const vm = new Vue({
-    el: '#vm',
-    delimiters: ['[[', ']]'],
-    data: {
-        greeting: 'Hello, Vue!',
-        flaskGreeting: ''
-    },
-    created: async function(){
-        const gResponse = await fetch(apiEndpoint + 'greeting');
-        const gObject = await gResponse.json();
-        this.flaskGreeting = gObject.greeting;
-    }
-})
+async function create_game() {
+    var response = await fetch(apiEndpoint + 'game', {
+        method: "POST"
+    }).then(
+        response => response.json()
+    );
+    if (response.hasOwnProperty("code"))
+        window.location.href = "game/" + response.code;
+};

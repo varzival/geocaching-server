@@ -25,8 +25,9 @@ def random_string():
 def greeting():
     return {'greeting': 'Hello from Flask!'}
 
+@api_bp.route("/game", methods=["POST"])
 @api_bp.route("/game/<game_code>", methods=["GET", "POST", "DELETE"])
-def game(game_code):
+def game(game_code=None):
     if game_code:
         game_code = game_code.lower()
 
@@ -70,19 +71,19 @@ def game(game_code):
                 db_session.refresh(game)
 
             data = request.get_json()
+            if data:
+                name = data.get("name")
+                if name:
+                    game.name = name
 
-            name = data.get("name")
-            if name:
-                game.name = name
+                quizes_posted = data.get("quizes")
+                if quizes_posted:
+                    if not isinstance(quizes_posted, list):
+                        abort(400)
+                    db_session.query(Quiz).filter(game.id == Quiz.id).delete()
 
-            quizes_posted = data.get("quizes")
-            if quizes_posted:
-                if not isinstance(quizes_posted, list):
-                    abort(400)
-                db_session.query(Quiz).filter(game.id == Quiz.id).delete()
-
-                for quiz in quizes_posted:
-                    db_session.add(Quiz(**quiz))
+                    for quiz in quizes_posted:
+                        db_session.add(Quiz(**quiz))
 
             db_session.commit()
             return jsonify({"code": game.code}), 200
