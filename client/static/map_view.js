@@ -9,7 +9,8 @@ new Vue({
         code: "",
         game: {},
         markers: [],
-        marker_selected: -1
+        marker_selected: -1,
+        picked: null
     },
     mounted() {
         var element = this.$refs.map;

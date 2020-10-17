@@ -25,9 +25,14 @@ crossorigin=""/>
   <div v-if="game.hasOwnProperty('quizes')">
     <div v-if="game.quizes.length && marker_selected > -1">
       <p>[[ game.quizes[marker_selected].text ]]</p>
-      <p v-for="option in game.quizes[marker_selected].options">
-        [[ option ]]
-      </p>
+
+      <form>
+        <div v-for="(option, index) in game.quizes[marker_selected].options">
+          <label :for="'option'+index">[[ option ]]</label>
+          <input type="radio" :id="'option'+index" :value="option" v-model="picked">
+        </div>
+      </form>
+      <p>Picked: [[ picked ]]</p>
     </div>
   </div>
 
