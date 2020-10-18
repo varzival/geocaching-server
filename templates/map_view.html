@@ -30,6 +30,7 @@ crossorigin=""/>
 
       <p>
         <input type="text" v-model="game.quizes[marker_selected].text" @change="quizTextChange">
+        <input type="button" v-on:click="remove_quiz()" value="Frage entfernen">
       </p>
 
       <form>

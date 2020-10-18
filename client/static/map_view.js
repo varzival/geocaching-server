@@ -32,9 +32,9 @@ new Vue({
             for (quiznr in quizes)
             {
                 quiz = quizes[quiznr];
-                var target = L.latLng(""+quiz.lat, ""+quiz.lon);
+                var target = L.latLng(quiz.lat, quiz.lon);
                 lastTarget = target;
-                vm.addMarker(quiz);
+                vm.newMarker(quiz.lat, quiz.lon, quiz.text);
             }
             vm.map.setView(lastTarget, 14);
             vm.map.on("click", vm.onMapClick);
@@ -43,24 +43,6 @@ new Vue({
     methods: {
         updateCorrect(quiznr, optnr) {
             this.game.quizes[quiznr].correct = optnr;
-        },
-        addMarker(quiz) {
-            var target = L.latLng(""+quiz.lat, ""+quiz.lon);
-            var marker = L.marker(target, {draggable: true});
-            const marker_nr = this.markers.length;
-            const vm = this;
-            marker
-                .bindPopup(quiz.text)
-                .addTo(this.map)
-                .on("click", function(e){vm.marker_selected = marker_nr;})
-                .on("dragend", function(e){
-                    var latlng = e.target.getLatLng();
-                    vm.game.quizes[marker_nr].lat = latlng.lat;
-                    vm.game.quizes[marker_nr].lon = latlng.lng;
-                    vm.marker_selected = marker_nr;
-                });
-            this.markers.push(marker);
-            return marker;
         },
         onMapClick(e) {
             if (!this.game.hasOwnProperty("quizes"))
@@ -76,14 +58,37 @@ new Vue({
             this.game.quizes.push(quiz);
         },
         newMarker(lat, lon, text) {
-            var marker = L.marker([lat, lon], {draggable: true})
-            const marker_nr = this.markers.length;
             const vm = this;
+            var marker = L.marker([lat, lon], {draggable: true})
             marker
                 .bindPopup(text)
                 .addTo(this.map)
-                .on("click", function(e){vm.marker_selected = marker_nr;});
+                .on("click", function(e){
+                    vm.marker_selected = this.properties.index;
+                })
+                .on("dragend", function(e){
+                    var latlng = e.target.getLatLng();
+                    vm.game.quizes[this.properties.index].lat = latlng.lat;
+                    vm.game.quizes[this.properties.index].lon = latlng.lng;
+                    vm.marker_selected = this.properties.index;
+                });
+            marker.properties = {};
+            marker.properties.index = this.markers.length;
             this.markers.push(marker);
+            this.markers.forEach(this.updateMarkerEvents);
+            return marker;
+        },
+        updateMarkerEvents(item, index) {
+            item.properties.index = index;
+        },
+        remove_quiz() {
+            if (! (-1 < this.marker_selected < this.markers.length))
+                return;
+            this.game.quizes.splice(this.marker_selected, 1);
+            this.map.removeLayer(this.markers[this.marker_selected]);
+            this.markers.splice(this.marker_selected, 1);
+            this.marker_selected = -1;
+            this.markers.forEach(this.updateMarkerEvents);
         },
         add_option() {
             if (! (-1 < this.marker_selected < this.markers.length))
