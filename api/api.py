@@ -45,7 +45,6 @@ def game(game_code=None):
                 quiz_arr.append({
                     "lon": quiz.lon,
                     "lat": quiz.lat,
-                    "game_id": quiz.game_id,
                     "correct": quiz.correct,
                     "text": quiz.text,
                     "options": quiz.options

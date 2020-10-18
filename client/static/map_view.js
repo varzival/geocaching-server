@@ -52,12 +52,56 @@ new Vue({
             marker
                 .bindPopup(quiz.text)
                 .addTo(this.map)
-                .on("click", function(e){vm.marker_selected = marker_nr;});
+                .on("click", function(e){vm.marker_selected = marker_nr;})
+                .on("dragend", function(e){
+                    var latlng = e.target.getLatLng();
+                    vm.game.quizes[marker_nr].lat = latlng.lat;
+                    vm.game.quizes[marker_nr].lon = latlng.lng;
+                    vm.marker_selected = marker_nr;
+                });
             this.markers.push(marker);
             return marker;
         },
         onMapClick(e) {
-            L.marker([0,0], {draggable: true}).setLatLng(e.latlng).bindPopup("").addTo(this.map);
+            if (!this.game.hasOwnProperty("quizes"))
+                return;
+            this.newMarker(e.latlng.lat, e.latlng.lng, "Neue Frage");
+            var quiz = {
+                "text": "Neue Frage",
+                "lat": e.latlng.lat,
+                "lon": e.latlng.lng,
+                "correct": -1,
+                "options": []
+            }
+            this.game.quizes.push(quiz);
+        },
+        newMarker(lat, lon, text) {
+            var marker = L.marker([lat, lon], {draggable: true})
+            const marker_nr = this.markers.length;
+            const vm = this;
+            marker
+                .bindPopup(text)
+                .addTo(this.map)
+                .on("click", function(e){vm.marker_selected = marker_nr;});
+            this.markers.push(marker);
+        },
+        add_option() {
+            if (! (-1 < this.marker_selected < this.markers.length))
+                return;
+            this.game.quizes[this.marker_selected].options.push("Option");
+        },
+        remove_option(index) {
+            if (! (-1 < this.marker_selected < this.markers.length))
+                return;
+            this.game.quizes[this.marker_selected].options.splice(index, 1);
+            if (this.game.quizes[this.marker_selected].correct == index
+                || this.game.quizes[this.marker_selected].correct >= this.game.quizes[this.marker_selected].options.length)
+                this.game.quizes[this.marker_selected].correct = 0;
+        },
+        quizTextChange(evt) {
+            if (! (-1 < this.marker_selected < this.markers.length))
+                return;
+            this.markers[this.marker_selected].bindPopup(evt.target.value);
         }
     }
 });

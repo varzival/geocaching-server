@@ -9,8 +9,8 @@ crossorigin=""/>
 {% block content %}
 <div id="vm" code="{{ game_code }}">
   <div>
-    <p>[[code]]</p>
-    <p>[[game.name]]</p>
+    <p>Game Code: [[code]]</p>
+    <p>Titel: <input type="text" v-model="game.name"></p>
   </div>
 
   <!--
@@ -24,18 +24,28 @@ crossorigin=""/>
   
   <div v-if="game.hasOwnProperty('quizes')">
     <div v-if="game.quizes.length && marker_selected > -1">
-      <p>[[ game.quizes[marker_selected].text ]]</p>
+      <p>
+        Lat: [[ game.quizes[marker_selected].lat ]], Lon: [[ game.quizes[marker_selected].lon ]]
+      </p>
+
+      <p>
+        <input type="text" v-model="game.quizes[marker_selected].text" @change="quizTextChange">
+      </p>
 
       <form>
         <div v-for="(option, index) in game.quizes[marker_selected].options" :key="'option'+index">
-          <label :for="'option'+index">[[ option ]]</label>
-          <input type="radio" 
-            :id="'option'+index" 
-            :value="option" 
-            :checked="game.quizes[marker_selected].correct==index" 
-            v-on:click="updateCorrect(marker_selected, index)">
+          <p>
+            <input type="radio"
+              :checked="game.quizes[marker_selected].correct==index" 
+              v-on:click="updateCorrect(marker_selected, index)">
+            <input type="text" v-model="game.quizes[marker_selected].options[index]">
+            <input type="button" v-on:click="remove_option(index)" value="Option entfernen">
+          </p>
         </div>
       </form>
+      <p>
+        <button v-on:click="add_option()">Option hinzufügen</button>
+      </p>
     </div>
   </div>
 
