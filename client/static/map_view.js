@@ -41,6 +41,9 @@ new Vue({
         });
     },
     methods: {
+        updateCorrect(quiznr, optnr) {
+            this.game.quizes[quiznr].correct = optnr;
+        },
         addMarker(quiz) {
             var target = L.latLng(""+quiz.lat, ""+quiz.lon);
             var marker = L.marker(target, {draggable: true});

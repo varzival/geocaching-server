@@ -27,12 +27,15 @@ crossorigin=""/>
       <p>[[ game.quizes[marker_selected].text ]]</p>
 
       <form>
-        <div v-for="(option, index) in game.quizes[marker_selected].options">
+        <div v-for="(option, index) in game.quizes[marker_selected].options" :key="'option'+index">
           <label :for="'option'+index">[[ option ]]</label>
-          <input type="radio" :id="'option'+index" :value="option" v-model="picked">
+          <input type="radio" 
+            :id="'option'+index" 
+            :value="option" 
+            :checked="game.quizes[marker_selected].correct==index" 
+            v-on:click="updateCorrect(marker_selected, index)">
         </div>
       </form>
-      <p>Picked: [[ picked ]]</p>
     </div>
   </div>
 
