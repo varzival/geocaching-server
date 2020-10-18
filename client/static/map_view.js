@@ -82,7 +82,7 @@ new Vue({
             item.properties.index = index;
         },
         remove_quiz() {
-            if (! (-1 < this.marker_selected < this.markers.length))
+            if (! (-1 < this.marker_selected || this.marker_selected < this.markers.length))
                 return;
             this.game.quizes.splice(this.marker_selected, 1);
             this.map.removeLayer(this.markers[this.marker_selected]);
@@ -91,12 +91,13 @@ new Vue({
             this.markers.forEach(this.updateMarkerEvents);
         },
         add_option() {
-            if (! (-1 < this.marker_selected < this.markers.length))
+            if (! (-1 < this.marker_selected || this.marker_selected < this.markers.length))
                 return;
+            console.log("executed")
             this.game.quizes[this.marker_selected].options.push("Option");
         },
         remove_option(index) {
-            if (! (-1 < this.marker_selected < this.markers.length))
+            if (! (-1 < this.marker_selected || this.marker_selected < this.markers.length))
                 return;
             this.game.quizes[this.marker_selected].options.splice(index, 1);
             if (this.game.quizes[this.marker_selected].correct == index
@@ -104,9 +105,28 @@ new Vue({
                 this.game.quizes[this.marker_selected].correct = 0;
         },
         quizTextChange(evt) {
-            if (! (-1 < this.marker_selected < this.markers.length))
+            if (! (-1 < this.marker_selected || this.marker_selected < this.markers.length))
                 return;
             this.markers[this.marker_selected].bindPopup(evt.target.value);
+        },
+        save() {
+            if (!this.game.hasOwnProperty("quizes"))
+                return;
+            for (quiznr in this.game.quizes)
+            {
+                if (this.game.quizes[quiznr].correct < 0) {
+                    alert("Konnte nicht speichern: mindestens eines der Quizes hat keine korrekte Anwort.")
+                    return;
+                }
+            }
+            axios.post(apiEndpoint+ "game/" + this.code, this.game)
+                .then( function(response) {
+                    alert("Spiel gespeichert!");
+                })
+                .catch( function(error) {
+                    alert("Konnte Spiel nicht speichern.");
+                    console.log(error);
+                });
         }
     }
 });

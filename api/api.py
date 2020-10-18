@@ -21,10 +21,6 @@ code_length = 6
 def random_string():
     return ''.join(random.choice(string.ascii_lowercase) for i in range(code_length))
 
-@api_bp.route("/greeting")
-def greeting():
-    return {'greeting': 'Hello from Flask!'}
-
 @api_bp.route("/game", methods=["POST"])
 @api_bp.route("/game/<game_code>", methods=["GET", "POST", "DELETE"])
 def game(game_code=None):
@@ -79,10 +75,10 @@ def game(game_code=None):
                 if quizes_posted:
                     if not isinstance(quizes_posted, list):
                         abort(400)
-                    db_session.query(Quiz).filter(game.id == Quiz.id).delete()
+                    db_session.query(Quiz).filter(game.id == Quiz.game_id).delete()
 
                     for quiz in quizes_posted:
-                        db_session.add(Quiz(**quiz))
+                        db_session.add(Quiz(**quiz, game_id=game.id))
 
             db_session.commit()
             return jsonify({"code": game.code}), 200
